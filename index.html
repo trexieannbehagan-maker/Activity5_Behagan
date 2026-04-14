@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX PHP Lab</title>
+    <style>
+        body { font-family: sans-serif; margin: 50px; }
+        #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; width: 300px; }
+    </style>
+</head>
+<body>
+    <h2>User Information Finder</h2>
+    <input type="number" id="userid" placeholder="Enter User ID (1-3)">
+    <button onclick="getUserData()">Get Info</button>
+    <div id="result">User details will appear here...</div>
+
+    <script>
+        function getUserData() {
+            const id = document.getElementById('userid').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!id) {
+                resultDiv.innerHTML = "Please enter an ID.";
+                return;
+            }
+
+            // Initiating the AJAX request to the PHP backend
+            fetch(`process.php?id=${id}`)
+                .then(response => response.json()) // Parsing the JSON response
+                .then(data => {
+                    if (data.error) {
+                        resultDiv.innerHTML = `<span style="color:red;">${data.error}</span>`;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <strong>Name:</strong> ${data.name} <br>
+                            <strong>Role:</strong> ${data.role}
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    resultDiv.innerHTML = "An error occurred while fetching data.";
+                });
+        }
+    </script>
+</body>
+</html>
